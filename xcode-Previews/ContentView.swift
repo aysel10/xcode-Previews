@@ -8,9 +8,38 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+   // let dishes = Dish.all()
+    @State private var tapped: Bool = false
+    @State private var cardDragState: CGSize = CGSize.zero
+    @State private var rotateState: Double = 0
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        
+        CardView(tapped: self.tapped)
+            .animation(.default)
+            .offset(y: cardDragState.height)
+            .rotationEffect(Angle(degrees: self.rotateState))
+            .gesture(DragGesture()
+                        .onChanged { value in
+                            self.cardDragState = value.translation
+                        }
+                        .onEnded { value in
+                            self.cardDragState = CGSize.zero
+                            
+                        }
+            )
+            .gesture(TapGesture(count: 1)
+                        .onEnded({ () in
+                            self.tapped.toggle()
+                        }))
+            .gesture(RotationGesture()
+                        .onChanged { value in
+                            self.rotateState = value.degrees
+                            
+                        })
+        
+        
     }
 }
 
@@ -19,3 +48,5 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+
